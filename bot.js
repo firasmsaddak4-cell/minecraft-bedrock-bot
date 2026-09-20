@@ -4,24 +4,7 @@ const HOST = "ssafe77.aternos.me";
 const PORT = 54809;
 const BOT_NAME = "SafeBot";
 
-let reconnectTimer = null;
-let connecting = false;
-
-function scheduleReconnect() {
-  if (reconnectTimer || connecting) return;
-
-  console.log("🔄 محاولة جديدة بعد 10 ثوانٍ...");
-
-  reconnectTimer = setTimeout(() => {
-    reconnectTimer = null;
-    connect();
-  }, 10000);
-}
-
 function connect() {
-  if (connecting) return;
-
-  connecting = true;
   console.log(`🌐 الاتصال بـ ${HOST}:${PORT}...`);
 
   let client;
@@ -31,12 +14,12 @@ function connect() {
       host: HOST,
       port: PORT,
       username: BOT_NAME,
-      offline: true
+      offline: true,
+      version: "1.21.131"
     });
 
     client.on("join", () => {
       console.log("✅ البوت دخل السيرفر!");
-      connecting = false;
     });
 
     client.on("spawn", () => {
@@ -45,21 +28,31 @@ function connect() {
 
     client.on("disconnect", (reason) => {
       console.log("❌ تم فصل البوت:", reason);
-      connecting = false;
-      scheduleReconnect();
+      reconnect();
     });
 
     client.on("error", (err) => {
       console.log("⚠️ خطأ:", err.message);
-      connecting = false;
-      scheduleReconnect();
+      reconnect();
     });
 
   } catch (err) {
     console.log("⚠️ فشل الاتصال:", err.message);
-    connecting = false;
-    scheduleReconnect();
+    reconnect();
   }
+}
+
+let timer = null;
+
+function reconnect() {
+  if (timer) return;
+
+  console.log("🔄 محاولة جديدة بعد 10 ثوانٍ...");
+
+  timer = setTimeout(() => {
+    timer = null;
+    connect();
+  }, 10000);
 }
 
 connect();
