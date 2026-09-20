@@ -4,36 +4,61 @@ const HOST = "ssafe77.aternos.me";
 const PORT = 54809;
 const BOT_NAME = "SafeBot";
 
+let reconnectTimer = null;
+let connecting = false;
+
+function scheduleReconnect() {
+  if (reconnectTimer || connecting) return;
+
+  console.log("🔄 محاولة جديدة بعد 10 ثوانٍ...");
+
+  reconnectTimer = setTimeout(() => {
+    reconnectTimer = null;
+    connect();
+  }, 10000);
+}
+
 function connect() {
-  console.log("Connecting to Minecraft...");
+  if (connecting) return;
 
-  const client = bedrock.createClient({
-    host: HOST,
-    port: PORT,
-    username: BOT_NAME,
-    offline: true
-  });
+  connecting = true;
+  console.log(`🌐 الاتصال بـ ${HOST}:${PORT}...`);
 
-  client.on("join", () => {
-    console.log("✅ Bot joined the server!");
-  });
+  let client;
 
-  client.on("spawn", () => {
-    console.log("🟢 Bot spawned in the world!");
-  });
+  try {
+    client = bedrock.createClient({
+      host: HOST,
+      port: PORT,
+      username: BOT_NAME,
+      offline: true
+    });
 
-  client.on("disconnect", (reason) => {
-    console.log("❌ Bot disconnected:", reason);
-    reconnect();
-  });
+    client.on("join", () => {
+      console.log("✅ البوت دخل السيرفر!");
+      connecting = false;
+    });
 
-  client.on("error", (err) => {
-    console.log("⚠️ Error:", err.message);
-  });
+    client.on("spawn", () => {
+      console.log("🟢 البوت ظهر داخل العالم!");
+    });
 
-  function reconnect() {
-    console.log("🔄 Reconnecting in 10 seconds...");
-    setTimeout(connect, 10000);
+    client.on("disconnect", (reason) => {
+      console.log("❌ تم فصل البوت:", reason);
+      connecting = false;
+      scheduleReconnect();
+    });
+
+    client.on("error", (err) => {
+      console.log("⚠️ خطأ:", err.message);
+      connecting = false;
+      scheduleReconnect();
+    });
+
+  } catch (err) {
+    console.log("⚠️ فشل الاتصال:", err.message);
+    connecting = false;
+    scheduleReconnect();
   }
 }
 
