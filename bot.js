@@ -1,58 +1,59 @@
 const bedrock = require("bedrock-protocol");
 
-const HOST = "ssafe77.aternos.me";
-const PORT = 54809;
-const BOT_NAME = "SafeBot";
+const HOST = process.env.MC_HOST || "safe77.aternos.me";
+const PORT = Number(process.env.MC_PORT || 54809);
+const BOT_NAME = process.env.BOT_NAME || "Safe77Bot";
 
-function connect() {
-  console.log(`🌐 الاتصال بـ ${HOST}:${PORT}...`);
+console.log("=================================");
+console.log(" Minecraft Bedrock Bot");
+console.log(" Version: 1.21.130");
+console.log("=================================");
+console.log(`Server: ${HOST}:${PORT}`);
+console.log(`Bot: ${BOT_NAME}`);
 
-  let client;
+function connectBot() {
+  console.log("Connecting...");
 
-  try {
-    client = bedrock.createClient({
-      host: HOST,
-      port: PORT,
-      username: BOT_NAME,
-      offline: true,
-      version: "1.21.131"
-    });
+  const client = bedrock.createClient({
+    host: HOST,
+    port: PORT,
+    username: BOT_NAME,
+    offline: true,
+    version: "1.21.130"
+  });
 
-    client.on("join", () => {
-      console.log("✅ البوت دخل السيرفر!");
-    });
+  client.on("join", () => {
+    console.log("✅ Bot joined the server!");
+  });
 
-    client.on("spawn", () => {
-      console.log("🟢 البوت ظهر داخل العالم!");
-    });
+  client.on("spawn", () => {
+    console.log("✅ Bot spawned in the world!");
+  });
 
-    client.on("disconnect", (reason) => {
-      console.log("❌ تم فصل البوت:", reason);
-      reconnect();
-    });
+  client.on("text", (packet) => {
+    if (packet.message) {
+      console.log(`[CHAT] ${packet.message}`);
+    }
+  });
 
-    client.on("error", (err) => {
-      console.log("⚠️ خطأ:", err.message);
-      reconnect();
-    });
+  client.on("disconnect", (packet) => {
+    console.log("❌ Bot disconnected:", packet);
+  });
 
-  } catch (err) {
-    console.log("⚠️ فشل الاتصال:", err.message);
-    reconnect();
-  }
+  client.on("error", (err) => {
+    console.log("❌ Error:", err.message);
+  });
+
+  client.on("close", () => {
+    console.log("⚠️ Connection closed.");
+    console.log("Reconnecting in 10 seconds...");
+
+    setTimeout(() => {
+      connectBot();
+    }, 10000);
+  });
+
+  return client;
 }
 
-let timer = null;
-
-function reconnect() {
-  if (timer) return;
-
-  console.log("🔄 محاولة جديدة بعد 10 ثوانٍ...");
-
-  timer = setTimeout(() => {
-    timer = null;
-    connect();
-  }, 10000);
-}
-
-connect();
+connectBot();.
