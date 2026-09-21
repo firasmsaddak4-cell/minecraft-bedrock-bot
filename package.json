@@ -1,11 +1,15 @@
 {
   "name": "minecraft-bedrock-bot",
   "version": "1.0.0",
+  "description": "Minecraft Bedrock 1.21.130 bot",
   "main": "bot.js",
   "scripts": {
     "start": "node bot.js"
   },
+  "engines": {
+    "node": ">=20"
+  },
   "dependencies": {
-    "bedrock-protocol": "latest"
+    "bedrock-protocol": "3.59.0"
   }
 }
