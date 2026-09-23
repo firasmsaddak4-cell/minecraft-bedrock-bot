@@ -4,7 +4,7 @@ function start() {
   const client = bedrock.createClient({
     host: 'ssafe77.aternos.me',
     port: 54809,
-    username: 'safe7bot',
+    username: 'safe77bot',
     offline: true,
     skipPing: true,
     version: '1.21.131', // اتركه كما نجح معك
