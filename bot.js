@@ -2,12 +2,13 @@ const bedrock = require('bedrock-protocol');
 
 function start() {
   const client = bedrock.createClient({
-    host: 'ssafe77.aternos.me',
-    port: 54809,
-    username: 'safe7bot',
-    offline: true,
-    skipPing: true,
-  });
+  host: 'ssafe77.aternos.me',
+  port: 54809,
+  username: 'safe7bot',
+  offline: true,
+  skipPing: true,
+  version: '1.21.130',
+});
 
   client.on('disconnect', (p) => console.log('DISCONNECT:', JSON.stringify(p)));
   client.on('kick', (p) => console.log('KICK:', JSON.stringify(p)));
