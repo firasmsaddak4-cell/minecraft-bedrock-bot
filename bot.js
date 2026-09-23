@@ -7,7 +7,7 @@ function start() {
     username: 'safe77bot',
     offline: true,
     skipPing: true,
-    version: '1.21.131', // اتركه كما نجح معك
+    version: '1.21.130', // اتركه كما نجح معك
   });
 
   let pos = { x: 0, y: 0, z: 0 };
