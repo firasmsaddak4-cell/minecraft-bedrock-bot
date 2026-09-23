@@ -1,11 +1,7 @@
 {
-  "name": "minecraft-bedrock-bot",
+  "name": "safe7bot",
   "version": "1.0.0",
   "main": "bot.js",
-  "scripts": {
-    "start": "node bot.js"
-  },
-  "dependencies": {
-    "bedrock-protocol": "3.59.0"
-  }
+  "scripts": { "start": "node bot.js" },
+  "dependencies": { "bedrock-protocol": "latest" }
 }
